@@ -10,7 +10,7 @@ export default function HomePage() {
             Transform Your <span className="text-blue-600 underline decoration-wavy">Inside Sales Engine</span>
           </h1>
           <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
-            Maria Bertone partners with SaaS and high-growth companies to architect scalable revenue engines, 
+            Maria Bertone partners with SaaS and high-growth companies to architect scalable revenue engines,
             optimise GTM strategy, and build elite inside sales teams.
           </p>
 
@@ -33,7 +33,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Why Maria Section */}
+      {/* Why Maria */}
       <section className="bg-white py-20">
         <div className="container mx-auto px-4">
           <h2 className="text-4xl font-bold text-center text-gray-900 mb-16 underline decoration-blue-400">
@@ -70,23 +70,24 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Tools */}
+      {/* Tools Section */}
       <section className="bg-gray-50 py-20">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-4xl font-bold text-gray-900 mb-6 underline decoration-blue-400">
             Free Diagnostic Tools
           </h2>
           <p className="text-lg text-gray-600 mb-12 max-w-2xl mx-auto">
-            Assess your current sales setup, pipeline velocity, and GTM clarity — in minutes.
+            Explore interactive tools to uncover gaps, benchmark your team, and accelerate growth — instantly.
           </p>
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {/* Tool Card 1 */}
+
+          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            {/* Tool 1: Inside Sales Check */}
             <div className="bg-white p-8 rounded-xl shadow-md hover:shadow-xl">
               <h3 className="text-2xl font-semibold text-gray-900 mb-3">
                 Inside Sales Health Check
               </h3>
               <p className="text-gray-600 mb-4">
-                Assess how well your team, tools, and funnel are aligned with revenue targets.
+                Evaluate alignment across People, Process, Technology, and Pipeline.
               </p>
               <Link
                 href="/tools/inside-sales-check"
@@ -96,19 +97,51 @@ export default function HomePage() {
               </Link>
             </div>
 
-            {/* Tool Card 2 */}
+            {/* Tool 2: Pipeline Velocity */}
             <div className="bg-white p-8 rounded-xl shadow-md hover:shadow-xl">
               <h3 className="text-2xl font-semibold text-gray-900 mb-3">
                 Pipeline Velocity Calculator
               </h3>
               <p className="text-gray-600 mb-4">
-                Forecast revenue potential by tweaking key GTM inputs like win rate and cycle length.
+                Quantify your revenue potential by optimising key GTM inputs.
               </p>
               <Link
                 href="/tools/pipeline-velocity"
                 className="inline-block text-green-600 font-semibold hover:underline"
               >
                 Calculate Now →
+              </Link>
+            </div>
+
+            {/* Tool 3: Funnel Friction */}
+            <div className="bg-white p-8 rounded-xl shadow-md hover:shadow-xl">
+              <h3 className="text-2xl font-semibold text-gray-900 mb-3">
+                Funnel Friction Finder
+              </h3>
+              <p className="text-gray-600 mb-4">
+                Visualise stage-to-stage drop-offs and get quick-win recommendations.
+              </p>
+              <Link
+                href="/tools/funnel-friction"
+                className="inline-block text-red-600 font-semibold hover:underline"
+              >
+                Find Friction →
+              </Link>
+            </div>
+
+            {/* Tool 4: Rep Readiness */}
+            <div className="bg-white p-8 rounded-xl shadow-md hover:shadow-xl">
+              <h3 className="text-2xl font-semibold text-gray-900 mb-3">
+                Rep Readiness Radar
+              </h3>
+              <p className="text-gray-600 mb-4">
+                Score SDR or AE skills across objection handling, tech use, and product fluency.
+              </p>
+              <Link
+                href="/tools/rep-readiness"
+                className="inline-block text-yellow-600 font-semibold hover:underline"
+              >
+                Launch Radar →
               </Link>
             </div>
           </div>
@@ -145,7 +178,7 @@ export default function HomePage() {
             Let’s Restructure Your Revenue Engine
           </h2>
           <p className="text-lg mb-8 max-w-xl mx-auto">
-            Book a free strategy call or get started with the tools above. Zero pressure, just value.
+            Book a free strategy call or try one of the tools above to get started.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <a
