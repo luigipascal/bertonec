@@ -1,4 +1,10 @@
-﻿export const questions = [
+// src/lib/questions.ts
+export type Question = {
+  question: string;
+  options: { label: string; value: number }[];
+};
+
+export const questions: Question[] = [
   {
     question: "How well-defined is your inside-sales process?",
     options: [
