@@ -6,14 +6,14 @@ type Props = { q: Question; value?: number; onChange: (val: number) => void };
 export default function QuestionStep({ q, value = 3, onChange }: Props) {
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-heading mb-2">{q.question}</h2>
+      <h2 className="text-xl font-heading mb-2">{q.text}</h2>
       <div className="flex justify-between text-sm text-gray-600">
         {[1, 2, 3, 4, 5].map((n) => (
           <label key={n} className="flex flex-col items-center cursor-pointer select-none">
             <input
               type="radio"
               className="sr-only"
-              name={q.question}  {/* Use something stable */}
+              name={q.id}
               value={n}
               checked={value === n}
               onChange={() => onChange(n)}
