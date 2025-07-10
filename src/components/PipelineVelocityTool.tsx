@@ -1,82 +1,67 @@
-﻿"use client";
-import { useState } from "react";
+'use client'
 
-export function PipelineVelocityTool() {
-  const [curSQL, setCurSQL] = useState("");
-  const [tgtSQL, setTgtSQL] = useState("");
-  const [curWin, setCurWin] = useState("");
-  const [tgtWin, setTgtWin] = useState("");
-  const [acv, setAcv] = useState("");
-  const [delta, setDelta] = useState<number | null>(null);
+import React, { useState } from 'react'
 
-  const calc = () => {
-    const cSQL = parseFloat(curSQL);
-    const tSQL = parseFloat(tgtSQL);
-    const cWin = parseFloat(curWin) / 100;
-    const tWin = parseFloat(tgtWin) / 100;
-    const deal = parseFloat(acv);
+export default function PipelineVelocityTool() {
+  const [leads, setLeads] = useState('')
+  const [deals, setDeals] = useState('')
+  const [days, setDays] = useState('')
+  const [velocity, setVelocity] = useState<number | null>(null)
 
-    if ([cSQL, tSQL, cWin, tWin, deal].some(Number.isNaN)) {
-      setDelta(null); return;
+  const calculateVelocity = () => {
+    const numLeads = parseFloat(leads)
+    const numDeals = parseFloat(deals)
+    const cycleDays = parseFloat(days)
+
+    if (numLeads && numDeals && cycleDays) {
+      const velocityScore = (numDeals / numLeads) * (30 / cycleDays)
+      setVelocity(parseFloat(velocityScore.toFixed(2)))
+    } else {
+      setVelocity(null)
     }
-    const curRev = cSQL * cWin * deal;
-    const tgtRev = tSQL * tWin * deal;
-    const diff  = Math.round(tgtRev - curRev);
-    setDelta(diff);
-
-    fetch("/api/submit-lead", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        tool: "pipeline-velocity",
-        currentRevenue: curRev,
-        targetRevenue: tgtRev,
-        upside: diff,
-        ts: new Date().toISOString()
-      })
-    });
-  };
+  }
 
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-medium">Current SQLs / mo</label>
-          <input type="number" className="w-full border rounded px-2 py-1"
-                 value={curSQL} onChange={e => setCurSQL(e.target.value)}/>
-        </div>
-        <div>
-          <label className="block text-sm font-medium">Target SQLs / mo</label>
-          <input type="number" className="w-full border rounded px-2 py-1"
-                 value={tgtSQL} onChange={e => setTgtSQL(e.target.value)}/>
-        </div>
-        <div>
-          <label className="block text-sm font-medium">Current Win-Rate %</label>
-          <input type="number" className="w-full border rounded px-2 py-1"
-                 value={curWin} onChange={e => setCurWin(e.target.value)}/>
-        </div>
-        <div>
-          <label className="block text-sm font-medium">Target Win-Rate %</label>
-          <input type="number" className="w-full border rounded px-2 py-1"
-                 value={tgtWin} onChange={e => setTgtWin(e.target.value)}/>
-        </div>
-        <div className="col-span-2">
-          <label className="block text-sm font-medium">Average Deal ACV ($)</label>
-          <input type="number" className="w-full border rounded px-2 py-1"
-                 value={acv} onChange={e => setAcv(e.target.value)}/>
-        </div>
+    <div className="p-6 max-w-xl mx-auto bg-white rounded shadow">
+      <h1 className="text-2xl font-bold mb-4">📈 Pipeline Velocity Calculator</h1>
+      <p className="text-sm mb-4">Enter your lead and conversion data to assess sales momentum.</p>
+
+      <div className="space-y-3">
+        <input
+          type="number"
+          placeholder="Leads entering pipeline (monthly)"
+          value={leads}
+          onChange={(e) => setLeads(e.target.value)}
+          className="w-full border p-2 rounded"
+        />
+        <input
+          type="number"
+          placeholder="Deals closed (monthly)"
+          value={deals}
+          onChange={(e) => setDeals(e.target.value)}
+          className="w-full border p-2 rounded"
+        />
+        <input
+          type="number"
+          placeholder="Average sales cycle (days)"
+          value={days}
+          onChange={(e) => setDays(e.target.value)}
+          className="w-full border p-2 rounded"
+        />
+        <button
+          onClick={calculateVelocity}
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full"
+        >
+          Calculate Velocity
+        </button>
       </div>
 
-      <button className="bg-brand text-white px-4 py-2 rounded w-full"
-              onClick={calc}>
-        Calculate Upside
-      </button>
-
-      {delta !== null && (
-        <p className="text-center text-lg mt-2">
-          🏆 <strong>${"{delta}"} ARR upside / month</strong>
-        </p>
+      {velocity !== null && (
+        <div className="mt-4 p-4 bg-gray-100 rounded">
+          <h2 className="text-lg font-medium">Velocity Score: {velocity}</h2>
+          <p className="text-sm text-gray-600">Higher is better. A score >1 means healthy deal momentum.</p>
+        </div>
       )}
     </div>
-  );
+  )
 }
