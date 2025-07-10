@@ -1,90 +1,38 @@
-'use client'
-
-import React from 'react'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { defaultStages } from '@/data/funnelStages'
 
 export default function FunnelFrictionPage() {
   const [selectedStage, setSelectedStage] = useState<number | null>(null)
 
-  const stagesWithDropoff = defaultStages.map((stage, idx) => ({
-    ...stage,
-    dropoffRate: Math.floor(Math.random() * 50) + 10, // simulate dropoff
-    action: Math.random() > 0.5 ? 'Improve' : 'Maintain',
-  }))
-
-  const suggestions = stagesWithDropoff.filter((s) => s.action === 'Improve')
-
   return (
-    <main className="min-h-screen bg-gray-50 py-12 px-4">
-      <div className="max-w-3xl mx-auto">
-        <h1 className="text-3xl font-bold mb-6">Funnel Friction Analyzer</h1>
+    <div style={{ padding: '2rem' }}>
+      <h1>Funnel Friction Tool</h1>
+      <p>Select a stage of the funnel to examine where friction occurs.</p>
 
-        <p className="mb-6 text-gray-600">
-          This tool helps you identify where users drop off during your funnel
-          and which stages need improvement.
-        </p>
-
-        <ul className="space-y-4">
-          {stagesWithDropoff.map((stage, index) => (
-            <li
-              key={index}
-              className={`p-4 border rounded-md cursor-pointer ${
-                selectedStage === index
-                  ? 'border-blue-500 bg-blue-50'
-                  : 'border-gray-300'
-              }`}
-              onClick={() => setSelectedStage(index)}
+      <ul style={{ listStyle: 'none', padding: 0 }}>
+        {defaultStages.map(stage => (
+          <li key={stage.id} style={{ margin: '1rem 0' }}>
+            <button
+              onClick={() => setSelectedStage(stage.id)}
+              style={{
+                padding: '0.5rem 1rem',
+                backgroundColor: selectedStage === stage.id ? '#2563eb' : '#e2e8f0',
+                color: selectedStage === stage.id ? '#fff' : '#000',
+                border: 'none',
+                borderRadius: '5px'
+              }}
             >
-              <div className="flex justify-between items-center">
-                <span className="font-semibold">{stage.name}</span>
-                <span className="text-sm text-gray-500">
-                  Drop-off: {stage.dropoffRate}%
-                </span>
-              </div>
-              <div className="text-sm text-gray-600 mt-1">
-                Suggested Action:{' '}
-                <span
-                  className={`font-medium ${
-                    stage.action === 'Improve' ? 'text-red-500' : 'text-green-600'
-                  }`}
-                >
-                  {stage.action}
-                </span>
-              </div>
-            </li>
-          ))}
-        </ul>
+              {stage.label}
+            </button>
+          </li>
+        ))}
+      </ul>
 
-        {selectedStage !== null && (
-          <div className="mt-8 p-4 border-t">
-            <h2 className="text-xl font-bold mb-2">Stage Details</h2>
-            <p className="text-gray-700">
-              <strong>{stagesWithDropoff[selectedStage].name}</strong> has a
-              drop-off rate of{' '}
-              <strong>{stagesWithDropoff[selectedStage].dropoffRate}%</strong>.
-              Recommended action:{' '}
-              <strong>{stagesWithDropoff[selectedStage].action}</strong>.
-            </p>
-          </div>
-        )}
-
-        {suggestions.length > 0 && (
-          <div className="mt-12 border-t pt-6">
-            <h2 className="text-2xl font-semibold mb-4">
-              🛠️ Suggested Improvements
-            </h2>
-            <ul className="list-disc list-inside text-gray-700">
-              {suggestions.map((s, idx) => (
-                <li key={idx}>
-                  Improve <strong>{s.name}</strong> – Drop-off rate:{' '}
-                  {s.dropoffRate}%
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </div>
-    </main>
+      {selectedStage !== null && (
+        <div style={{ marginTop: '2rem' }}>
+          <strong>Selected Stage:</strong> {defaultStages.find(s => s.id === selectedStage)?.label}
+        </div>
+      )}
+    </div>
   )
 }
