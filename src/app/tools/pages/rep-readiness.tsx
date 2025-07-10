@@ -1,54 +1,58 @@
-// pages/tools/rep-readiness.tsx
+// pages/tools/funnel-friction.tsx
 
-import { useState } from 'react'; import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Tooltip, ResponsiveContainer } from 'recharts'; import Link from 'next/link';
+import { useState } from 'react'; import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts'; import Link from 'next/link';
 
-const criteria = [ { key: 'product', label: 'Product Knowledge' }, { key: 'objections', label: 'Objection Handling' }, { key: 'confidence', label: 'Confidence & Tone' }, { key: 'tools', label: 'Tool Usage (CRM/Sequencer)' }, { key: 'qualifying', label: 'Qualifying Skills' }, { key: 'closing', label: 'Closing Technique' }, ];
+const defaultStages = [ { name: 'Leads Generated', key: 'leads' }, { name: 'Initial Conversations', key: 'conversations' }, { name: 'Qualified Opportunities', key: 'qualified' }, { name: 'Proposals Sent', key: 'proposals' }, { name: 'Deals Won', key: 'deals' }, ];
 
-export default function RepReadiness() { const [scores, setScores] = useState({ product: 6, objections: 5, confidence: 7, tools: 4, qualifying: 6, closing: 5, });
+export default function FunnelFriction() { const [data, setData] = useState({ leads: 1000, conversations: 500, qualified: 250, proposals: 100, deals: 40, });
 
-const handleChange = (key: string, value: string) => { const num = parseInt(value); if (!isNaN(num) && num >= 0 && num <= 10) { setScores({ ...scores, [key]: num }); } };
+const handleChange = (key: string, value: string) => { const num = parseInt(value); if (!isNaN(num)) { setData({ ...data, [key]: num }); } };
 
-const radarData = criteria.map(c => ({ subject: c.label, A: scores[c.key as keyof typeof scores], fullMark: 10, }));
+const stagesWithDropoff = defaultStages.map((stage, idx) => { const value = data[stage.key as keyof typeof data]; const prev = idx === 0 ? value : data[defaultStages[idx - 1].key as keyof typeof data]; const conversion = idx === 0 ? 100 : ((value / prev) * 100).toFixed(1); return { name: stage.name, value, conversion: Number(conversion), highlight: idx > 0 && Number(conversion) < 30, }; });
 
-const gaps = criteria .filter(c => scores[c.key as keyof typeof scores] <= 5) .map(c => c.label);
+const suggestions = stagesWithDropoff .filter((s) => s.highlight) .map((s) => Improve your "${s.name}" stage — conversion is only ${s.conversion}%);
 
-return ( <main className="min-h-screen bg-gray-50 py-12 px-4"> <div className="max-w-3xl mx-auto"> <h1 className="text-4xl font-bold text-gray-900 mb-4">🧠 Rep Readiness Radar</h1> <p className="text-gray-600 mb-8"> Assess your sales reps' core capabilities across six dimensions. Score each from 0–10. </p>
+return ( <main className="min-h-screen bg-gray-50 py-12 px-4"> <div className="max-w-3xl mx-auto"> <h1 className="text-4xl font-bold text-gray-900 mb-4">🚦 Funnel Friction Finder</h1> <p className="text-gray-600 mb-8"> Input your funnel numbers to visualise drop-offs and identify friction points. </p>
 
-<div className="grid gap-4 mb-10">
-      {criteria.map(c => (
-        <div key={c.key} className="flex items-center gap-4">
-          <label className="w-64 text-gray-800 font-medium">{c.label}</label>
+<div className="grid gap-4 mb-8">
+      {defaultStages.map(stage => (
+        <div key={stage.key} className="flex items-center gap-4">
+          <label className="w-48 text-gray-800 font-medium">{stage.name}</label>
           <input
             type="number"
-            min="0"
-            max="10"
             className="w-full border border-gray-300 rounded px-3 py-2"
-            value={scores[c.key as keyof typeof scores]}
-            onChange={e => handleChange(c.key, e.target.value)}
+            value={data[stage.key as keyof typeof data]}
+            onChange={e => handleChange(stage.key, e.target.value)}
           />
         </div>
       ))}
     </div>
 
     <div className="bg-white shadow-md rounded p-6 mb-8">
-      <h2 className="text-2xl font-semibold text-gray-800 mb-4">📊 Readiness Radar</h2>
-      <ResponsiveContainer width="100%" height={400}>
-        <RadarChart cx="50%" cy="50%" outerRadius="80%" data={radarData}>
-          <PolarGrid />
-          <PolarAngleAxis dataKey="subject" />
-          <PolarRadiusAxis angle={30} domain={[0, 10]} />
-          <Radar name="Rep" dataKey="A" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.6} />
-          <Tooltip formatter={(value: number) => `${value}/10`} />
-        </RadarChart>
+      <h2 className="text-2xl font-semibold text-gray-800 mb-4">🔍 Funnel Overview</h2>
+      <ResponsiveContainer width="100%" height={300}>
+        <BarChart data={stagesWithDropoff} layout="vertical" margin={{ left: 40 }}>
+          <XAxis type="number" hide />
+          <YAxis type="category" dataKey="name" width={180} />
+          <Tooltip formatter={(val) => `${val} leads`} />
+          <Bar dataKey="value">
+            {stagesWithDropoff.map((entry, index) => (
+              <Cell
+                key={`cell-${index}`}
+                fill={entry.highlight ? '#f87171' : '#60a5fa'}
+              />
+            ))}
+          </Bar>
+        </BarChart>
       </ResponsiveContainer>
     </div>
 
-    {gaps.length > 0 && (
-      <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 p-4 rounded">
-        <h3 className="font-semibold mb-2">🔧 Development Areas</h3>
+    {suggestions.length > 0 && (
+      <div className="bg-red-50 border border-red-200 text-red-800 p-4 rounded">
+        <h3 className="font-semibold mb-2">⚠️ Friction Detected</h3>
         <ul className="list-disc ml-5">
-          {gaps.map((g, i) => (
-            <li key={i}>Consider coaching on: <strong>{g}</strong></li>
+          {suggestions.map((s, i) => (
+            <li key={i}>{s}</li>
           ))}
         </ul>
       </div>
