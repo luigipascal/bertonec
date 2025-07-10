@@ -1,68 +1,90 @@
-// pages/tools/funnel-friction.tsx
+'use client'
 
-import { useState } from 'react'; import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts'; import Link from 'next/link';
+import React from 'react'
+import { useState } from 'react'
+import { defaultStages } from '@/data/funnelStages'
 
-const defaultStages = [ { name: 'Leads Generated', key: 'leads' }, { name: 'Initial Conversations', key: 'conversations' }, { name: 'Qualified Opportunities', key: 'qualified' }, { name: 'Proposals Sent', key: 'proposals' }, { name: 'Deals Won', key: 'deals' }, ];
+export default function FunnelFrictionPage() {
+  const [selectedStage, setSelectedStage] = useState<number | null>(null)
 
-export default function FunnelFriction() { const [data, setData] = useState({ leads: 1000, conversations: 500, qualified: 250, proposals: 100, deals: 40, });
+  const stagesWithDropoff = defaultStages.map((stage, idx) => ({
+    ...stage,
+    dropoffRate: Math.floor(Math.random() * 50) + 10, // simulate dropoff
+    action: Math.random() > 0.5 ? 'Improve' : 'Maintain',
+  }))
 
-const handleChange = (key: string, value: string) => { const num = parseInt(value); if (!isNaN(num)) { setData({ ...data, [key]: num }); } };
+  const suggestions = stagesWithDropoff.filter((s) => s.action === 'Improve')
 
-const stagesWithDropoff = defaultStages.map((stage, idx) => { const value = data[stage.key as keyof typeof data]; const prev = idx === 0 ? value : data[defaultStages[idx - 1].key as keyof typeof data]; const conversion = idx === 0 ? 100 : ((value / prev) * 100).toFixed(1); return { name: stage.name, value, conversion: Number(conversion), highlight: idx > 0 && Number(conversion) < 30, }; });
+  return (
+    <main className="min-h-screen bg-gray-50 py-12 px-4">
+      <div className="max-w-3xl mx-auto">
+        <h1 className="text-3xl font-bold mb-6">Funnel Friction Analyzer</h1>
 
-const suggestions = stagesWithDropoff .filter((s) => s.highlight) .map((s) => Improve your "${s.name}" stage — conversion is only ${s.conversion}%);
+        <p className="mb-6 text-gray-600">
+          This tool helps you identify where users drop off during your funnel
+          and which stages need improvement.
+        </p>
 
-return ( <main className="min-h-screen bg-gray-50 py-12 px-4"> <div className="max-w-3xl mx-auto"> <h1 className="text-4xl font-bold text-gray-900 mb-4">🚦 Funnel Friction Finder</h1> <p className="text-gray-600 mb-8"> Input your funnel numbers to visualise drop-offs and identify friction points. </p>
-
-<div className="grid gap-4 mb-8">
-      {defaultStages.map(stage => (
-        <div key={stage.key} className="flex items-center gap-4">
-          <label className="w-48 text-gray-800 font-medium">{stage.name}</label>
-          <input
-            type="number"
-            className="w-full border border-gray-300 rounded px-3 py-2"
-            value={data[stage.key as keyof typeof data]}
-            onChange={e => handleChange(stage.key, e.target.value)}
-          />
-        </div>
-      ))}
-    </div>
-
-    <div className="bg-white shadow-md rounded p-6 mb-8">
-      <h2 className="text-2xl font-semibold text-gray-800 mb-4">🔍 Funnel Overview</h2>
-      <ResponsiveContainer width="100%" height={300}>
-        <BarChart data={stagesWithDropoff} layout="vertical" margin={{ left: 40 }}>
-          <XAxis type="number" hide />
-          <YAxis type="category" dataKey="name" width={180} />
-          <Tooltip formatter={(val) => `${val} leads`} />
-          <Bar dataKey="value">
-            {stagesWithDropoff.map((entry, index) => (
-              <Cell
-                key={`cell-${index}`}
-                fill={entry.highlight ? '#f87171' : '#60a5fa'}
-              />
-            ))}
-          </Bar>
-        </BarChart>
-      </ResponsiveContainer>
-    </div>
-
-    {suggestions.length > 0 && (
-      <div className="bg-red-50 border border-red-200 text-red-800 p-4 rounded">
-        <h3 className="font-semibold mb-2">⚠️ Friction Detected</h3>
-        <ul className="list-disc ml-5">
-          {suggestions.map((s, i) => (
-            <li key={i}>{s}</li>
+        <ul className="space-y-4">
+          {stagesWithDropoff.map((stage, index) => (
+            <li
+              key={index}
+              className={`p-4 border rounded-md cursor-pointer ${
+                selectedStage === index
+                  ? 'border-blue-500 bg-blue-50'
+                  : 'border-gray-300'
+              }`}
+              onClick={() => setSelectedStage(index)}
+            >
+              <div className="flex justify-between items-center">
+                <span className="font-semibold">{stage.name}</span>
+                <span className="text-sm text-gray-500">
+                  Drop-off: {stage.dropoffRate}%
+                </span>
+              </div>
+              <div className="text-sm text-gray-600 mt-1">
+                Suggested Action:{' '}
+                <span
+                  className={`font-medium ${
+                    stage.action === 'Improve' ? 'text-red-500' : 'text-green-600'
+                  }`}
+                >
+                  {stage.action}
+                </span>
+              </div>
+            </li>
           ))}
         </ul>
+
+        {selectedStage !== null && (
+          <div className="mt-8 p-4 border-t">
+            <h2 className="text-xl font-bold mb-2">Stage Details</h2>
+            <p className="text-gray-700">
+              <strong>{stagesWithDropoff[selectedStage].name}</strong> has a
+              drop-off rate of{' '}
+              <strong>{stagesWithDropoff[selectedStage].dropoffRate}%</strong>.
+              Recommended action:{' '}
+              <strong>{stagesWithDropoff[selectedStage].action}</strong>.
+            </p>
+          </div>
+        )}
+
+        {suggestions.length > 0 && (
+          <div className="mt-12 border-t pt-6">
+            <h2 className="text-2xl font-semibold mb-4">
+              🛠️ Suggested Improvements
+            </h2>
+            <ul className="list-disc list-inside text-gray-700">
+              {suggestions.map((s, idx) => (
+                <li key={idx}>
+                  Improve <strong>{s.name}</strong> – Drop-off rate:{' '}
+                  {s.dropoffRate}%
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
-    )}
-
-    <div className="mt-12 text-sm text-gray-500">
-      <Link href="/">← Back to Homepage</Link>
-    </div>
-  </div>
-</main>
-
-); }
-
+    </main>
+  )
+}
