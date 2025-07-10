@@ -8,9 +8,9 @@ export default function FunnelFriction() { const [data, setData] = useState({ le
 
 const handleChange = (key: string, value: string) => { const num = parseInt(value); if (!isNaN(num)) { setData({ ...data, [key]: num }); } };
 
-const stagesWithDropoff = defaultStages.map((stage, idx) => { const value = data[stage.key as keyof typeof data]; const prev = idx === 0 ? value : data[defaultStages[idx - 1].key as keyof typeof data]; const conversion = idx === 0 ? 100 : ((value / prev) * 100).toFixed(1); return { name: stage.name, value, conversion: Number(conversion), highlight: idx > 0 && Number(conversion) < 30, // friction if drop >70% }; });
+const stagesWithDropoff = defaultStages.map((stage, idx) => { const value = data[stage.key as keyof typeof data]; const prev = idx === 0 ? value : data[defaultStages[idx - 1].key as keyof typeof data]; const conversion = idx === 0 ? 100 : ((value / prev) * 100).toFixed(1); return { name: stage.name, value, conversion: Number(conversion), highlight: idx > 0 && Number(conversion) < 30, }; });
 
-const suggestions = stagesWithDropoff .filter(s => s.highlight) .map(s => Improve your "${s.name}" stage — conversion is only ${s.conversion}%);
+const suggestions = stagesWithDropoff .filter((s) => s.highlight) .map((s) => Improve your "${s.name}" stage — conversion is only ${s.conversion}%);
 
 return ( <main className="min-h-screen bg-gray-50 py-12 px-4"> <div className="max-w-3xl mx-auto"> <h1 className="text-4xl font-bold text-gray-900 mb-4">🚦 Funnel Friction Finder</h1> <p className="text-gray-600 mb-8"> Input your funnel numbers to visualise drop-offs and identify friction points. </p>
 
