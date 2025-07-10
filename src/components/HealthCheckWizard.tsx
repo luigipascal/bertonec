@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 
-export default function HealthCheckWizard() {
+export function HealthCheckWizard() {
   const [answers, setAnswers] = useState<{ [key: string]: string }>({})
   const [step, setStep] = useState(0)
 
@@ -53,3 +53,5 @@ export default function HealthCheckWizard() {
     </div>
   )
 }
+
+export default HealthCheckWizard;

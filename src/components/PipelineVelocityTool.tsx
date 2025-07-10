@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 
-export default function PipelineVelocityTool() {
+export function PipelineVelocityTool() {
   const [leads, setLeads] = useState('')
   const [deals, setDeals] = useState('')
   const [days, setDays] = useState('')
@@ -65,3 +65,5 @@ export default function PipelineVelocityTool() {
     </div>
   )
 }
+
+export default PipelineVelocityTool;

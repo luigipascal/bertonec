@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { defaultStages } from '@/data/funnelStages'
+import { defaultStages } from '@/app/data/funnelStages'
 
 export default function FunnelFrictionPage() {
   const [selectedStage, setSelectedStage] = useState<number | null>(null)
